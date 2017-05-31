@@ -1,0 +1,7 @@
+mongorestore --db ekart ekart
+
+give > npm run webpack
+
+give > npm start
+
+open > localhost:8080

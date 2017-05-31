@@ -1,0 +1,44 @@
+{
+  "name": "Ekart",
+  "version": "1.0.0",
+  "description": "Micro Ecommerce App",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon . --harmony",
+    "webpack": "webpack-dev-server --progress --color"
+  },
+  "author": "nabham",
+  "dependencies": {
+    "async": "^2.4.0",
+    "body-parser": "^1.17.2",
+    "crypto": "0.0.3",
+    "eventemitter2": "^4.1.0",
+    "express": "^4.13.3",
+    "history": "^1.9.1",
+    "immutable": "^3.7.5",
+    "jquery": "^3.2.1",
+    "jsdom": "^10.1.0",
+    "mongoose": "^4.9.10",
+    "nodemon": "^1.11.0",
+    "object-assign": "^4.0.1",
+    "react": "^0.14.0",
+    "react-bootstrap": "^0.31.0",
+    "react-dom": "^0.14.0",
+    "react-redux": "^4.0.0",
+    "react-router": "1.0.0-rc1",
+    "redux": "^3.0.0",
+    "sync-request": "^4.0.3"
+  },
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-eslint": "^4.1.2",
+    "babel-loader": "^5.3.2",
+    "concurrently": "^3.4.0",
+    "cross-env": "^4.0.0",
+    "eslint": "^1.4.3",
+    "eslint-plugin-react": "^3.3.2",
+    "react-hot-loader": "^1.3.0",
+    "webpack": "^1.12.1",
+    "webpack-dev-server": "^1.11.0"
+  }
+}
