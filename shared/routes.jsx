@@ -19,6 +19,7 @@ import ReturnedOrders from './components/ReturnedOrders';
 import CancelledOrders from './components/CancelledOrders';
 import Wishlist from './components/Wishlist';
 import Notify from './components/Notify';
+import Rater from './components/Rater';
 
 export default (
 

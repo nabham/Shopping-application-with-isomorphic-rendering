@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-  
+
 const mapStateToProps = (state) => {
   return {
     orderHistory: state.UserReducer.order_history
@@ -34,7 +34,7 @@ class ReturnedOrders extends React.Component{
         );
       }
     });
-    console.log(this.props.orderHistory);
+    //console.log(this.props.orderHistory);
     return(
       <div className={"container"}>
         <div className={"row"}>

@@ -2,42 +2,35 @@ import Constants from '../utilities/ActionConstants';
 import ajaxHelper from '../utilities/ajaxHelper';
 
 export function updateUserState(data){
-  return{
-    type: 'UPDATE_STATE',
-    data
-  }
+    return{
+        type: 'UPDATE_STATE',
+        data
+    }
 }
 
 export function Login(data) {
-  return {
-    type : 'LOGIN',
-    data:data
-  }
+    return {
+        type : 'LOGIN',
+        data:data
+    }
 }
 
 export function register(data){
-// console.log(history);
-//AjaxHelper.registerUser('/api/registerUser', data);
-  return {
-    type : 'REGISTER',
-    data: data
-  }
+    return {
+        type : 'REGISTER',
+        data: data
+    }
 }
 
 export function addWishlist(product) {
-console.log("in addwish");
-  console.log(product.userId);
-  console.log(product.prodObj);
-  ajaxHelper.addcart('/api/addToCart',{"userId":product.userId,"prodObj":product.prodObj});
-
-  return {
-    type : 'wishlistToCart',
-    data : product.prodObj
-  }
+    ajaxHelper.addcart('/api/addToCart',{"userId":product.userId,"prodObj":product.prodObj});
+    return{
+        type : 'wishlistToCart',
+        data : product.prodObj
+    }
 }
 
 export function addtowishlist(data){
-    console.log("adding to wish list",data);
     ajaxHelper.addtowishlis('/api/addToWishList',{"userId":data.id,"prodObj":data.product})
     return{
         type: 'ADD_TO_WISHLIST',
@@ -45,39 +38,35 @@ export function addtowishlist(data){
     }
 }
 
-export function removefromWishlist(product,pid,uid) {
-  console.log(pid);
-  //var uid=sessionStorage.userName;
-  var uid=uid;
-  ajaxHelper.removeWishlist('/api/removeFromWishlist?userId='+uid+'&_id='+pid);
-  return {
-    type : 'wishlistRemove',
-    data : product
-  }
+export function removefromWishlist(product,pid,uid){
+    ajaxHelper.removeWishlist('/api/removeFromWishlist?userId='+uid+'&_id='+pid);
+    return {
+        type : 'wishlistRemove',
+        data : product
+    }
 }
 
 export function changeQuantityInCart(data){
-
-ajaxHelper.updateCartQuantity('/api/updateCart',{"username":data.userid,"productId":data.id,"quantity":data.quantity});
-  return{
-    type:Constants.CHANGE_QUANTITY_IN_CART,
-    data
-  }
+    ajaxHelper.updateCartQuantity('/api/updateCart',{"username":data.userid,"productId":data.id,"quantity":data.quantity});
+    return{
+        type:Constants.CHANGE_QUANTITY_IN_CART,
+        data
+    }
 }
 
 export function removeProductFromCart(data){
     ajaxHelper.removeFromCart('/api/removeFromCart',{"userId":data.UserId,"ProdId":data.ProdId});
-  return{
-    type: Constants.REMOVE_PRODUCT_FROM_CART,
-    data:data
-  }
+    return{
+        type: Constants.REMOVE_PRODUCT_FROM_CART,
+        data:data
+    }
 }
 
 export function selectedAddress(data){
-  return{
-    type: 'SELECT_ADDRESS',
-    data
-  }
+    return{
+        type: 'SELECT_ADDRESS',
+        data
+    }
 }
 
 
@@ -133,7 +122,7 @@ export function modifyOrder(order,operation, order_history,userId){
     ajaxHelper.updateOrder('/api/updateOrder',data);
 
     //notificatino
-    	    let notifObj={
+    let notifObj={
       notification_id: operation+"_"+order.order_id,
       notification_text:"Order was "+operation+" successfully for Order Id: "+order.order_id,
       notification_seen:false
@@ -147,7 +136,6 @@ export function modifyOrder(order,operation, order_history,userId){
       order_history:order_history,
       notifObj: notifObj
     }
-
     return{
       type: 'MODIFY_ORDER',
       data:dataNew
@@ -155,17 +143,15 @@ export function modifyOrder(order,operation, order_history,userId){
 }
 
 export function modifyCard(data){
-    console.log("in modifyCard action");
     ajaxHelper.modifyCard('/api/modifyCard',data);
     return{
-            type:"MODIFY_CARD",
-            data:data
-        };
+        type:"MODIFY_CARD",
+        data:data
+    };
 }
 
 
 export function selectCard(data){
-    console.log("in selectCard action");
     return{
         type:"SELECT_CARD",
         data:data
@@ -173,19 +159,16 @@ export function selectCard(data){
 }
 
 export function updateChanges(data){
-    console.log("in update action");
     ajaxHelper.updatechanges('/api/updateUser',data);
     return{
-            type:"UPDATE_CHANGES",
-            data:data
-        };
+        type:"UPDATE_CHANGES",
+        data:data
+    };
 }
 
 export function placeOrder(data){
-    console.log("in placeOrder action");
     ajaxHelper.placeOrder('/api/placeOrder',data);
-
-        let notifObj={
+    let notifObj={
       notification_id: "OrderPlaced_"+data.order.order_id,
       notification_text:"Order was placed successfully. Your Id is: "+data.order.order_id,
       notification_seen:false

@@ -4,9 +4,9 @@ import {connect} from 'react-redux';
 import Card from './Card.jsx';
 
 const mapStateToProps=(state)=>{
-return{
-    state:state.UserReducer
-}
+    return{
+        state:state.UserReducer
+    }
 }
 
 const mapDispatchToProps= (dispatch) =>{
@@ -109,13 +109,13 @@ handleSelectCard(event){
 
 render(){
     var cardItems=[];
-    if(this.props.state.card_details.length>0){
-    this.props.state.card_details.map((item)=>{
+    if(Object.keys(this.props.state).length>0 && this.props.state.card_details.length>0){
+    this.props.state.card_details.map((item,i)=>{
         if(this.props.showSelect){
-        cardItems.push(<div className="col-sm-3 cardBox"><input type="radio" name="card" value={item.card_number} onChange={this.handleSelectCard}></input>
+        cardItems.push(<div key={i} className="col-sm-3 cardBox"><input type="radio" name="card" value={item.card_number} onChange={this.handleSelectCard}></input>
         <Card type={item.card_type} number={item.card_number} expDate={item.expiration_date.year+'-'+item.expiration_date.month}/></div>)}
         else{
-            cardItems.push(<div className="col-sm-3 cardBox">
+            cardItems.push(<div key={i} className="col-sm-3 cardBox">
             <Card type={item.card_type} number={item.card_number} expDate={item.expiration_date.year+'-'+item.expiration_date.month}/></div>)
         }
     });
@@ -127,16 +127,14 @@ render(){
             <table><tbody className={'fieldShortner'}><tr><td>
         Card Number:</td><td><input type="text" required onChange={this.handleNumberChange} value={this.state.number} pattern="[0-9]{16}"></input></td></tr>
         <tr><td>Expiry Date:</td><td> <input type="month" required onChange={this.handleMonthSelect} value={this.state.month}/></td></tr>
-        <tr><td>Card Type:</td><td><select style={{width:"120px",border:"1px solid #cccccc",borderRadius:"3px"}} onChange={this.handleTypeSelect}><option value="Debit">Debit Card</option><option value="Credit">Credit Card</option></select></td></tr>
-                    <tr><td><button type="submit" className={"modButton"}>Add</button></td><td>
-                        <button type="button" style={{marginLeft:"30px"}} className={"modButton"} onClick={this.handleToggleCard}>Cancel</button></td></tr>
-        </tbody></table>
+        <tr><td>Card Type:</td><td><select style={{width:"120px",border:"1px solid #cccccc",borderRadius:"3px"}} onChange={this.handleTypeSelect}><option value="Debit">Debit Card</option><option value="Credit">Credit Card</option></select></td></tr><tr><td><button type="submit" className={"modButton"}>Add</button></td><td>
+        <button type="button" style={{marginLeft:"30px"}} className={"modButton"} onClick={this.handleToggleCard}>Cancel</button></td></tr></tbody></table>
         </form>:<input type="button" value="Add New Card" onClick={this.handleToggleCard} style={{width:"100%",height:"100%",backgroundColor:"inherit",border:"0",fontSize:"20px",fontWeight:"bold",color:"#cccccc"}}></input>}
             </div>
             {cardItems}
         </div>
     </div>);
-}
+    }
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(CardHolder);

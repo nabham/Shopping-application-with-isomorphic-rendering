@@ -6,19 +6,18 @@ import {connect} from 'react-redux';
 import AjaxHelper from '../utilities/ajaxHelper';
 
 const mapStateToProps = (state) => {
-  return {
-    state:state
-  };
+    return {
+        state:state
+    };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onMount : (data) => {
-      dispatch(ProductActions.loadProducts(data));
+      onMount : (data) => {
+          dispatch(ProductActions.loadProducts(data));
+      }
     }
-  }
 }
-
 
 class App extends React.Component{
     constructor(props){
@@ -26,18 +25,18 @@ class App extends React.Component{
     }
 
     componentDidMount(){
-    this.props.onMount(AjaxHelper.loadProducts('/api/initialProducts'));
-  }
+        this.props.onMount(AjaxHelper.loadProducts('/api/initialProducts'));
+    }
 
     render(){
         return(<div>
-                <Header history={this.props.history} />
+                <Header history={this.props.history} location={this.props.location} />
                 <div style={{minHeight:"300px"}}>
                     {this.props.children}
                 </div>
                 <Footer/>
-            </div>);
-
+            </div>
+        );
     }
 }
 

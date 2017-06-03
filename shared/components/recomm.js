@@ -5,63 +5,46 @@ import AjaxHelper from '../utilities/ajaxHelper';
 import Product from './Product';
 
 const mapStateToProps = (state) => {
-    console.log("in recomm");
-    console.log(state);
-  return {
-    state:state
-  };
+    return {
+        state:state
+    };
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onLogin : (data) =>
-     { dispatch(UserActions.Login(AjaxHelper.loginUser('/api/loginUser', data)));
-    }
-  }
-}
 
 class Recommendations extends React.Component {
-  constructor(props){
-    super(props);
-    this.handleSubmit=this.handleSubmit.bind(this);
-  }
-  handleSubmit(e){
-    e.preventDefault();
-    this.props.onLogin(data);
-  }
+    constructor(props){
+        super(props);
+    }
 
-
-
-  render() {
+    render(){
         let loggedIn = typeof sessionStorage == "object"?sessionStorage.getItem("userName")?sessionStorage.getItem('userName'):false:false;
-            let localStorageCart = [];
+        let localStorageCart = [];
         if(typeof localStorage == "object"){
-        localStorageCart = JSON.parse(localStorage.getItem('cart'));
+            localStorageCart = JSON.parse(localStorage.getItem('cart'));
         }
-      let cart = [];
+        let cart = [];
         if(localStorageCart && loggedIn){
-          let dbCart = []
-          if(this.props.UserReducer){
-            if(this.props.UserReducer.cart){
-              dbCart = this.props.UserReducer.cart;
+            let dbCart = []
+            if(this.props.UserReducer){
+                if(this.props.UserReducer.cart){
+                    dbCart = this.props.UserReducer.cart;
+                }
             }
-          }
 
           localStorageCart.forEach(function(eachItem){
-            dbCart.forEach(function(eachDbItem){
+              dbCart.forEach(function(eachDbItem){
               if(eachDbItem._id == localStorageCart._id){
-                eachDbItem.quantity += localStorageCart.quantity;
+                  eachDbItem.quantity += localStorageCart.quantity;
               }
             })
           })
           cart = dbCart;
-
         }
 
     let rows = []
     let history = this.props.history;
     let distinc = [];
-    if(this.props.state.UserReducer.order_history.length>0){
+    if(Object.keys(this.props.state.UserReducer).length>0 && this.props.state.UserReducer.order_history.length>0){
         rows = [];
         distinc = [];
         var self = this;
@@ -70,16 +53,16 @@ class Recommendations extends React.Component {
             let orderdate = new Date(datestr);
             let today = new Date();
             if((today.getFullYear()==orderdate.getFullYear()) && (today.getMonth()-orderdate.getMonth())<=1){
-            item.product_details.map((pro) => {
+            item.product_details.map((pro,i) => {
                 if(distinc.indexOf(pro._id) == -1){
-                distinc.push(pro._id);
-                let ideal = 'false';
-                self.props.state.ProductReducer.Products.forEach((item2) =>{
-                    if(item2._id==pro._id){
-                        ideal = item2.isDeal;
-                    }
-                })
-                rows.push(<div><Product id={pro._id} deal={ideal} url={pro.image_url} proname={pro.name} history = {history}/></div>)
+                    distinc.push(pro._id);
+                    let ideal = 'false';
+                    self.props.state.ProductReducer.Products.forEach((item2) =>{
+                        if(item2._id==pro._id){
+                            ideal = item2.isDeal;
+                        }
+                    })
+                rows.push(<div key={i+pro._id}><Product id={pro._id} deal={ideal} url={pro.image_url} proname={pro.name} history = {history}/></div>)
                 }
             })
             }
@@ -100,4 +83,4 @@ class Recommendations extends React.Component {
 }
 
 
- export default connect(mapStateToProps,mapDispatchToProps)(Recommendations);
+ export default connect(mapStateToProps)(Recommendations);

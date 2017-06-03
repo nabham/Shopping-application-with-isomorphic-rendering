@@ -10,15 +10,14 @@ import FormControl from 'react-bootstrap/lib/FormControl';
 import { addtocart,submitfeedback } from '../actions/ProductActions.js'
 import {addtowishlist} from '../actions/UserActions.js';
 
-
 const mapStateToProps = (state) => {
-  return {
-    state:state
-  };
+    return {
+        state:state
+    };
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return {
+    return {
         addtocart : (data) => {
             dispatch(addtocart(data));
         },
@@ -33,98 +32,115 @@ const mapDispatchToProps = (dispatch) => {
 
 class ProductDes extends React.Component {
 
-    constructor(props)
-    {
-      super(props)
-      this.state = {
-          url:'',
-          price:'',
-          name:'',
-          rating:'5',
-          quantity:1,
-          latestFeedback:'',
-          discount:0,
-          dealName:'',
-          customer:0
+    constructor(props){
+        super(props)
+        this.state = {
+            url:'',
+            price:'',
+            name:'',
+            rating:'5',
+            quantity:1,
+            latestFeedback:'',
+            discount:0,
+            dealName:'',
+            customer:0
         }
         this.handlequantity = this.handlequantity.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
-        this.handlewish = this.handlewish.bind(this); this.feedbackSubmitHandler=this.feedbackSubmitHandler.bind(this);
+        this.handlewish = this.handlewish.bind(this);
+        this.feedbackSubmitHandler=this.feedbackSubmitHandler.bind(this);
         this.handleFeedbackChange=this.handleFeedbackChange.bind(this);
         this.handleClick=this.handleClick.bind(this);
     }
-    
-    componentWillMount(){
-     this.props.state.ProductReducer.Products.forEach((item) =>{
-       if(item._id == this.props.params.id){
-           if(item.isDeal == 'true'){ this.setState({url:item.image_url,price:item.price,name:item.name,discount:item.deals.deal_discount,dealName:item.deals.deal_name,customer:item.feedback.length});
-            }
-           else{ 
-               this.setState({url:item.image_url,price:item.price,name:item.name,discount:0,dealName:'',customer:item.feedback.length});
-            }
-            }
-        })
+
+    componentDidMount(){
+        if(Object.keys(this.props.state.ProductReducer).length>0){
+            this.props.state.ProductReducer.Products.forEach((item) =>{
+                if(item._id == this.props.params.id){
+                    if(item.isDeal == 'true'){  this.setState({url:item.image_url,price:item.price,name:item.name,discount:item.deals.deal_discount,dealName:item.deals.deal_name,customer:item.feedback.length});
+                    }
+                    else{
+                        this.setState({url:item.image_url,price:item.price,name:item.name,discount:0,dealName:'',customer:item.feedback.length});
+                    }
+                }
+            })
+        }
     }
-    
+
+    componentDidUpdate(prevProps,prevState){
+        if(prevProps!=this.props){
+            if(Object.keys(this.props.state.ProductReducer).length>0){
+                this.props.state.ProductReducer.Products.forEach((item) =>{
+                    if(item._id == this.props.params.id){
+                        if(item.isDeal == 'true'){ this.setState({url:item.image_url,price:item.price,name:item.name,discount:item.deals.deal_discount,dealName:item.deals.deal_name,customer:item.feedback.length});
+                        }
+                        else{
+                        this.setState({url:item.image_url,price:item.price,name:item.name,discount:0,dealName:'',customer:item.feedback.length});
+                        }
+                    }
+                })
+            }
+        }
+    }
+
     handlequantity(e){
          this.setState({quantity:e.target.value})
      }
-    
+
     handlewish(){
         let loggedIn = typeof sessionStorage == "object"?sessionStorage.getItem("userName")?sessionStorage.getItem('userName'):false:false;
         var Obj = {};
         if(loggedIn){
-        this.props.state.ProductReducer.Products.forEach((item) =>{
-       if(item._id == this.props.params.id){
-            Obj = {_id:this.props.params.id,
-                  name:item.name,
-                   description:item.description,
-                   categories:item.category,
-                   image_url:item.image_url,
-                   price:Math.round(this.state.price*(100-this.state.discount)/100),
-                   deals:item.deals,
-                   quantity:this.state.quantity
-                  }
-            }
-        });
+            this.props.state.ProductReducer.Products.forEach((item) =>{
+                if(item._id == this.props.params.id){
+                    Obj = {
+                        _id:this.props.params.id,
+                        name:item.name,
+                        description:item.description,
+                        categories:item.category,
+                        image_url:item.image_url,
+                        price:Math.round(this.state.price*(100-this.state.discount)/100),
+                        deals:item.deals,
+                        quantity:this.state.quantity
+                    }
+                }
+            });
             this.props.addtowish({id:this.props.state.UserReducer._id,product:Obj})
         }
     }
-    
+
     handleAdd(){
-        
         let loggedIn = typeof sessionStorage == "object"?sessionStorage.getItem("userName")?sessionStorage.getItem('userName'):false:false;
         var Obj = {};
         var flag = true
         if(loggedIn){
-        console.log("logged in")
-        this.props.state.UserReducer.cart.forEach((item) => {
-            if(item._id==this.props.params.id){
-                console.log(parseInt(item.quantity)+parseInt(this.state.quantity));
-                if((item.quantity+parseInt(this.state.quantity))>4){
-                    
-                    alert("you cannot add more than 4 items");
-                    flag = false
+            this.props.state.UserReducer.cart.forEach((item) => {
+                if(item._id==this.props.params.id){
+                    if((item.quantity+parseInt(this.state.quantity))>4){
+                        alert("you cannot add more than 4 items");
+                        flag = false
+                    }
                 }
-            }
-        })
+            })
         }
         if(flag){
         this.props.state.ProductReducer.Products.forEach((item) =>{
-       if(item._id == this.props.params.id){
-            Obj = {_id:this.props.params.id,
-                  name:item.name,
-                   description:item.description,
-                   categories:item.category,
-                   image_url:item.image_url,
-                   price:Math.round(this.state.price*(100-this.state.discount)/100),
-                   deals:item.deals,
-                   quantity:this.state.quantity
+            if(item._id == this.props.params.id){
+                Obj = {
+                    _id:this.props.params.id,
+                    name:item.name,
+                    description:item.description,
+                    categories:item.category,
+                    image_url:item.image_url,
+                    price:Math.round(this.state.price*(100-this.state.discount)/100),
+                    deals:item.deals,
+                    quantity:this.state.quantity
                   }
-            }
+              }
         });
-        
-        if(loggedIn){ this.props.addtocart({id:this.props.state.UserReducer._id,product:Obj});
+
+        if(loggedIn){
+            this.props.addtocart({id:this.props.state.UserReducer._id,product:Obj});
         }
         else{
             if(localStorage.getItem("cart")){
@@ -136,13 +152,13 @@ class ProductDes extends React.Component {
                             arr[i].quantity = 4
                         }
                         else{
-                        arr[i].quantity = parseInt(arr[i].quantity) + parseInt(Obj.quantity);
+                            arr[i].quantity = parseInt(arr[i].quantity) + parseInt(Obj.quantity);
                         }
                         flag = false;
                     }
                 })
                 if(flag){
-                arr.push(Obj);
+                    arr.push(Obj);
                 }
             }
             else{
@@ -150,27 +166,29 @@ class ProductDes extends React.Component {
             }
             localStorage.setItem("cart",JSON.stringify(arr));
             window.emitter.emit('connection');
-        }   
+            }
+        }
     }
-    }
-    
+
     handleFeedbackChange(e){
-    this.setState({latestFeedback:e.target.value})
-  }
-  handleClick(rating){
-    this.setState({rating:rating});
-  }
-  feedbackSubmitHandler(e){
-    var Obj = {
-        comment:this.state.latestFeedback,
-        rating:this.state.rating,
-        id:this.props.state.UserReducer._id,
-        product:this.props.params.id
+        this.setState({latestFeedback:e.target.value})
     }
-    this.props.sbmitfeed(Obj);
-    this.setState({latestFeedback:"",rating:"5"});
-  }
-    
+
+    handleClick(rating){
+        this.setState({rating:rating});
+    }
+
+    feedbackSubmitHandler(e){
+        var Obj = {
+            comment:this.state.latestFeedback,
+            rating:this.state.rating,
+            id:this.props.state.UserReducer._id,
+            product:this.props.params.id
+        }
+        this.props.sbmitfeed(Obj);
+        this.setState({latestFeedback:"",rating:"5"});
+    }
+
      render(){
          var BreakException = {};
          let loggedin = typeof sessionStorage == "object"?sessionStorage.getItem("userName")?sessionStorage.getItem('userName'):false:false;
@@ -197,7 +215,7 @@ class ProductDes extends React.Component {
                 })
                 }
                 else{
-                   loggedin = false;  
+                   loggedin = false;
                 }
             });
         }
@@ -209,24 +227,25 @@ class ProductDes extends React.Component {
              //intentional catch
               //console.log(e)
          }
-        
-         
-         
+
          var avg1 = 0;
          var feedbacks = []
-        this.props.state.ProductReducer.Products.forEach((item) =>{
-       if(item._id == this.props.params.id && item.feedback.length>0){
-            var avgrate = 0;
-           item.feedback.forEach((feed,i) => {
-               feedbacks.push(<div key={i}> <FeedBack rating={feed.rating} username={feed.user_name} comment={feed.comment} /></div>);
-               avgrate += parseInt(feed.rating);
-           })
-           avg1 =  Math.round((avgrate/item.feedback.length)*100)/100;
-       }
-   })
+         if(Object.keys(this.props.state.ProductReducer).length>0){
+             this.props.state.ProductReducer.Products.forEach((item) =>{
+                 if(item._id == this.props.params.id && item.feedback.length>0){
+                     var avgrate = 0;
+                     item.feedback.forEach((feed,i) => {
+                         feedbacks.push(<div key={i}> <FeedBack rating={feed.rating} username={feed.user_name} comment={feed.comment} /></div>);
+                         avgrate += parseInt(feed.rating);
+                     })
+                     avg1 =  Math.round((avgrate/item.feedback.length)*100)/100;
+                 }
+             })
+         }
+
         let loggedIn = typeof sessionStorage == "object"?sessionStorage.getItem("userName")?sessionStorage.getItem('userName'):false:false;
-       return(
-         <div>
+        return(
+            <div>
             <div style={{height:"50px",width:"100%"}}></div>
             <div className={'imgBox1'}>
             <img src={this.state.url} className={'imgBox2'} />
@@ -248,7 +267,7 @@ class ProductDes extends React.Component {
                 <button className={'cartButton'} type="button" onClick={this.handleAdd}>Add to cart</button>
                 <br/><br/>
            <button type="button" onClick={this.handlewish}  className={loggedIn?'cartButton':'disabled-wish'}>Add to Wishlist</button>
-                
+
             </div>
             <div style={{height:"20px",clear:"both"}}></div>
             <div className={'feedbackBox'}>
@@ -256,7 +275,6 @@ class ProductDes extends React.Component {
                <Rater value={avg1}/><br/>
                <div>{avg1} out of 5 stars</div>
             {feedbacks}
-               
             <br/><br/>
                 {loggedin?<div><div className="form-group">
           <textarea className="form-control" rows="5" cols="12" value={this.state.latestFeedback} name="username" onChange={this.handleFeedbackChange} ref="username" ></textarea>
@@ -275,7 +293,6 @@ class ProductDes extends React.Component {
         </div>
        );
      }
-
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(ProductDes);

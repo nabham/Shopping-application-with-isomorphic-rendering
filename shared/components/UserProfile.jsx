@@ -42,14 +42,24 @@ class UserProfile extends React.Component{
         this.setState({password:event.target.value});
     }
 
-    componentWillMount(){
+    componentDidMount(){
+        if(Object.keys(this.props.state).length>0){
         const userdata = AjaxHelper.getUserProfile('/api/getProfile?username='+this.props.state._id);
         this.setState({password:userdata.password,mobile:userdata.mobile_no,name:userdata.name});
     }
+    }
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps!=this.props){
+        if(Object.keys(this.props.state).length>0){
+        const userdata = AjaxHelper.getUserProfile('/api/getProfile?username='+this.props.state._id);
+        this.setState({password:userdata.password,mobile:userdata.mobile_no,name:userdata.name})
+    }
+    }
+    }
+
     handleChanges(event){
         event.preventDefault();
         let data = {'userId':this.props.state._id,'name':this.state.name, 'mobile_no':this.state.mobile,'password':this.state.password};
-        console.log(data);
         this.props.onHandleChanges(data);
         this.props.history.push('/landingPage');
     }

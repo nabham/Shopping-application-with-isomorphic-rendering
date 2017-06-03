@@ -29,10 +29,10 @@ router.get('/initialProducts',function(req,res) {
   })
 });
 
-router.post('/updatestate',function(req,res){
+router.post('/reload',function(req,res){
     let userId = req.body.userId;
     UserSchema.find(function(err,data){
-        res.json(data);
+        res.json(data[0]);
     })
 })
 
@@ -77,10 +77,7 @@ res.end();
 
 router.get('/getProductByNames', function(req, res){
   let searchText = '^'+req.query.searchText;
-    console.log('searching');
-    console.log(searchText);
   ProductSchema.find({'name': new RegExp(searchText, "i")}, function(err, data){
-    console.log(data);
     res.json(data);
   })
 })
@@ -92,15 +89,12 @@ router.post('/addToCart', function(req, res){
   let quant = parseInt(prodObj.quantity);
    let already_quant = 0;
     let set_quant = 0; UserSchema.find({"_id":userId,"cart._id":prodId},function(err,data){
-        console.log("outside data");
-        console.log(data);
         if(data.length!=0){
             UserSchema.find({"_id":userId,"cart._id":prodId},{"cart":{"$elemMatch":{'_id':prodId}}},function(err,data){
                if(err){
                    console.log(err)
                }
                else{
-                   console.log("logging");
                    already_quant = data[0].cart[0].quantity;
 
                    if((already_quant+quant)>4){
@@ -122,7 +116,6 @@ router.post('/addToCart', function(req, res){
             })
         }
       else{
-          console.log('in data null');
           UserSchema.update({"_id":userId},{"$push":{'cart':prodObj}}, function(err, data){
             if(err){
               console.log(err);
@@ -143,20 +136,13 @@ router.post('/mergeToCart',function(req,res){
     let quant = parseInt(prodObj.quantity);
     let already_quant = 0;
     let set_quant = 0;
-    console.log(userId,prodId,quant);
     UserSchema.find({"_id":userId,"cart._id":prodId},function(err,data){
-        console.log("outside data");
-        console.log(data);
         if(data.length!=0){
-            console.log("inside data",data);
-            console.log(data[0].cart.quantity);
-            
             UserSchema.find({"_id":userId,"cart._id":prodId},{"cart":{"$elemMatch":{'_id':prodId}}},function(err,data){
                if(err){
                    console.log(err)
                }
                else{
-                   console.log("logging");
                    already_quant = data[0].cart[0].quantity;
 
                    if((already_quant+quant)>4){
@@ -176,7 +162,7 @@ router.post('/mergeToCart',function(req,res){
                     })
                }
             })
-        }             
+        }
       else{
           if(quant>4){
               prodObj.quantity = 4;
@@ -191,13 +177,12 @@ router.post('/mergeToCart',function(req,res){
           });
         }
     })
-    res.end(); 
+    res.end();
 });
 
 router.post('/removeFromCart', function(req,res){
   let userId = req.body.userId;
   let prodId = req.body.ProdId;
-    console.log(userId,prodId);
   UserSchema.update({'_id':userId},{"$pull":{'cart': {'_id':prodId}}}, function(err, data){
     if(err){
       console.log(err);
@@ -213,7 +198,7 @@ router.post('/addToWishlist', function(req, res){
   let userId = req.body.userId;
   let prodObj = req.body.prodObj;
     let prodId = prodObj._id;
- console.log(userId,prodId); UserSchema.find({"_id":userId,"wishlist._id":prodId},function(err,data){
+    UserSchema.find({"_id":userId,"wishlist._id":prodId},function(err,data){
       if(data.length==0){
           UserSchema.update({"_id":userId},{"$push":{'wishlist':prodObj}},function(err,data){
               if(err){
@@ -223,10 +208,10 @@ router.post('/addToWishlist', function(req, res){
                   console.log(data);
                 }
           });
-          
+
       }
       res.end();
-  })
+  });
 });
 
 router.get('/removeFromWishlist', function(req,res){
@@ -273,24 +258,24 @@ router.post('/updateUser',function(req,res){
         }
     res.end();
     });
-    
+
 });
 
 router.post('/registerUser',function(req,res) {
-  console.log("in registerUser API")
+  //console.log("in registerUser API")
   var user = req.body;
-  console.log(user);
-  console.log(user.password);
+  //console.log(user);
+  //console.log(user.password);
   var encPass = encrypt(user.password);
   user.password=encPass;
-  console.log(user.data);
+  //console.log(user.data);
   const userobj = {
                 "_id":user.email,
                 "name":user.userName,
                 "mobile_no":user.phone,
                 "password":user.password
               }
-              console.log(userobj);
+    console.log(userobj);
     new UserSchema(userobj).save(function(err,data){
       if(err){
         console.log(err);
@@ -303,10 +288,10 @@ router.post('/registerUser',function(req,res) {
 });
 
 router.post('/updateOrder',function(req,res){
-    console.log("body recieved: ");
-    console.log(req.body);
+    //console.log("body recieved: ");
+    //console.log(req.body);
     let order_id = req.body.order_id;
-    console.log("order ID recieved: "+ order_id);
+    //console.log("order ID recieved: "+ order_id);
     let user_id=req.body.userId;
     let order_status = req.body.order_status;
     UserSchema.update({"_id":user_id,"order_history.order_id":order_id},{'$set':{'order_history.$.order_status':order_status}},function(err,data){
@@ -318,30 +303,29 @@ router.post('/updateOrder',function(req,res){
         }
     res.end();
     });
-    
+
 });
 
 router.post('/loginUser',function(req,res) {
-  console.log("in loginUser API");
+  //console.log("in loginUser API");
   var user=req.body;
-  console.log(user);
+  //console.log(user);
   var encPass = encrypt(user.password);
   user.password=encPass;
   UserSchema.findOne(user,function (err,data) {
-    console.log(err);
-    console.log(data);
-
     if(data){
-      res.json(data);
+        console.log(data);
+        res.json(data);
     }
     else {
-      res.json(err);
+        console.log(err);
+        res.json(err);
     }
   })
 });
 
 router.post('/placeOrder',function(req,res){
-    console.log("request data is: ",req.body);
+    //console.log("request data is: ",req.body);
     let cart=req.body.cart;
     let card_details=req.body.card_details;
     let address=req.body.address;
@@ -356,20 +340,20 @@ router.post('/placeOrder',function(req,res){
         payment_detail:selectedCard,
         product_details:cart
     }
-    
+
     UserSchema.update({_id:req.body.user_id},{'$set':{'cart':[],'card_details':card_details,'address':address},'$push':{'order_history':order_history}},function(err,doc){
         if (err) {
             console.log("some error",err);
             return res.send(500, { error: err });
         }
-        
+
     });
     res.json(order_history);
 });
 
 
 router.post('/modifyCard',function(req,res){
-   console.log("card data ",req.body) ;
+   //console.log("card data ",req.body) ;
     UserSchema.update({_id:req.body.user_id},{'$set':{card_details:req.body.card_details}},function(err,doc){
        if(err){
            console.log("some error",err);

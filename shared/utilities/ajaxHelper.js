@@ -55,5 +55,6 @@ module.exports = {
     modifyAddress: SyncPostRequest,
     modifyNotifications: SyncPostRequest,
     insertNotification:SyncPostRequest,
-    getUserProfile:SyncGetRequest
+    getUserProfile:SyncGetRequest,
+    reloaddata:SyncPostRequest
 };

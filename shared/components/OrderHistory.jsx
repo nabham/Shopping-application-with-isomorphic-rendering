@@ -13,7 +13,15 @@ class OrderHistory extends React.Component{
   constructor(props){
     super(props);
   }
-      componentWillMount(){
+  componentWillMount(){
+      this.setState({
+          openOrders:0,
+          closedOrders:0,
+          cancelledOrders:0,
+          returnedOrders:0
+      })
+  }
+      componentDidMount(){
     let openOrders=0;
     let closedOrders=0;
     let cancelledOrders=0;
@@ -37,8 +45,8 @@ class OrderHistory extends React.Component{
     })
   }
 
-  componentWillReceiveProps(nextProps){
-      if(this.props!=this.nextProps){
+  componentDidUpdate(prevProps,prevState){
+      if(this.props!=prevProps){
             let openOrders=0;
     let closedOrders=0;
     let cancelledOrders=0;

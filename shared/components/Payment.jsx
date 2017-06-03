@@ -6,9 +6,9 @@ import Address from './Address.jsx';
 import AjaxHelper from '../utilities/ajaxHelper.js'
 
 const mapStateToProps=(state)=>{
-return{
-    state:state.UserReducer
-}
+    return{
+        state:state.UserReducer
+    }
 }
 
 const mapDispatchToProps= (dispatch) =>{
@@ -39,6 +39,7 @@ class Payment extends React.Component{
             addressValid:true
         }
     }
+
     componentWillUnmount(){
         this.setState({cardValid:true,addressValid:true});
         this.props.onUnmountingPayment();
@@ -54,12 +55,14 @@ class Payment extends React.Component{
             if(e_date-new Date()>=0)
             {
                 this.setState({cardValid:true});
-                let data={user_id:this.props.state._id,cart:this.props.state.cart,
+                let data={
+                    user_id:this.props.state._id,
+                    cart:this.props.state.cart,
                     address:this.props.state.address,
                     card_details:this.props.state.card_details,
-                selectedCard:this.props.state.selectedCard,
-            selectedAddress:this.props.state.selectedAddress}
-                console.log(data);
+                    selectedCard:this.props.state.selectedCard,
+                    selectedAddress:this.props.state.selectedAddress
+                }
                 let order = AjaxHelper.placeOrder('/api/placeOrder',data);
                 this.props.onPlaceOrder({data:data,order:order});
                 this.props.history.push('/historypage');
@@ -77,7 +80,7 @@ class Payment extends React.Component{
     render(){
         var products=[];
         var totalPrice=0;
-        if(this.props.state.cart.length>0){
+        if(Object.keys(this.props.state).length>0 && this.props.state.cart.length>0){
             this.props.state.cart.map((item,index)=>{
                 products.push(<div className="row" style={{borderBottom:"1px solid #cccccc",height:"150px",lineHeight:"150px"}} key={index}>
                 <div className="col-sm-4"><img src={item.image_url} style={{width:"150px",height:"100px"}}></img></div>
@@ -94,7 +97,6 @@ class Payment extends React.Component{
                 <div className="col-sm-3">Name</div>
                 <div className="col-sm-3">Quantity</div>
                 <div className="col-sm-2">Price</div>
-        
         </div>
             <div className="row">
                 <div className="col-sm-12" style={{borderBottom:"1px solid #cccccc"}}></div>
@@ -104,7 +106,6 @@ class Payment extends React.Component{
                 <div className="col-sm-8"></div>
                 <div className="col-sm-2">Total Price</div>
                 <div className="col-sm-2">Rs.{totalPrice}</div>
-
         </div>
         </div>
         <div style={{marginLeft:"50px",marginTop:"50px"}}>
@@ -115,7 +116,8 @@ class Payment extends React.Component{
         <h3 className={'dealHead'} style={{float:"left"}}>Select Details</h3><span style={{marginLeft:"20px"}}><img src="./images/visa.png" style={{marginTop:"15px"}} height="35px" width="35px"/></span></div><div style={{clear:"both"}}></div><CardHolder showSelect={true}/></div>
         {(!this.state.cardValid || !this.state.addressValid)?<p style={{color:"red"}}>Please select a valid card and address!!!</p>:<span></span>}
         <center style={{marginTop:"5%"}}><input type="button" className="btn btn-success" style={{backgroundColor:"#3e8e3e"}} value="Place Order" onClick={this.handlePlaceOrder}/></center>
-        </div>);
+        </div>
+    );
     }
 }
 

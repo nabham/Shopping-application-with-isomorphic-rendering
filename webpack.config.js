@@ -26,7 +26,6 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
   ],
-  devtool: 'inline-source-map',
   devServer: {
     hot: true,
     proxy: {

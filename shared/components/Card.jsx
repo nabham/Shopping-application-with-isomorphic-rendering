@@ -3,9 +3,9 @@ import {modifyCard} from '../actions/UserActions.js';
 import {connect} from 'react-redux';
 
 const mapStateToProps=(state)=>{
-return{
-    state:state.UserReducer
-}
+    return{
+        state:state.UserReducer
+    }
 }
 
 const mapDispatchToProps= (dispatch) =>{
@@ -56,7 +56,7 @@ class Card extends React.Component{
     handleMonthChange(event){
         let dateParts=event.target.value.split("-");
         if(this.isDateValid(dateParts[1],dateParts[0])){
-        this.setState({expiryMonth:dateParts[1],expiryYear:dateParts[0]});
+            this.setState({expiryMonth:dateParts[1],expiryYear:dateParts[0]});
         }
         else{
             alert('Invalid expiry date');
@@ -73,8 +73,9 @@ class Card extends React.Component{
         else
             return false;
     }
+
     handleNumberChange(event){
-    this.setState({number:event.target.value});
+        this.setState({number:event.target.value});
     }
 
     handleTypeChange(event){
@@ -173,7 +174,7 @@ render(){
             </tbody>
             </table>}
     </div>)
-}
+    }
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(Card)
