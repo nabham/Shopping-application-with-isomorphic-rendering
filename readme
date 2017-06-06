@@ -1,3 +1,5 @@
+npm install
+
 mongorestore --db ekart ekart
 
 give > npm run webpack
